@@ -2,14 +2,13 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 using namespace std;
 
-
-int Mincut(vector<vector<int> > G);
-pair<double,int> MinimumCutPhase( vector<vector<int> > &w, 
-                        vector<int> &G,
-                        DisjSet &dSet
-                        );
+int Mincut(vector<vector<int>> G);
+pair<double, int> MinimumCutPhase(vector<vector<int>> &w,
+                                  vector<int> &G,
+                                  DisjSet &dSet);
 
 int main()
 {
@@ -22,7 +21,7 @@ int main()
     cin >> n;
     cin >> e;
 
-    G = vector<vector<int>>(n, vector<int>(n, -1));
+    G = vector<vector<int>>(n, vector<int>(n, 0));
 
     int x, y, w;
     for (int i = 0; i < e; i++)
@@ -37,7 +36,7 @@ int main()
     return 0;
 }
 
-int Mincut(vector<vector<int> > w)
+int Mincut(vector<vector<int>> w)
 {
     int n = w.size();
     vector<int> Smin;
@@ -64,7 +63,7 @@ int Mincut(vector<vector<int> > w)
         pair<double, int> result = MinimumCutPhase(w, V, dSet);
         double cut_of_the_phase = result.first;
         int last = result.second;
-        
+
         if (cut_of_the_phase < current_min_cut)
         {
             current_min_cut = cut_of_the_phase;
@@ -80,79 +79,81 @@ int Mincut(vector<vector<int> > w)
     return current_min_cut;
 }
 
-pair<double,int> MinimumCutPhase( vector<vector<int> > &w, 
-                        vector<int> &G, // Make a Copy!!
-                        DisjSet &dSet
-                        )
+pair<double, int> MinimumCutPhase(vector<vector<int>> &w,
+                                  vector<int> &G, // Make a Copy!!
+                                  DisjSet &dSet)
 {
 
-   // A container to the vertices in this phase
-   vector<int> A;
+    // A container to the vertices in this phase
+    vector<int> A;
 
-   // Store a copy of G
-   vector<int> V;
-   
-   // Copying G by assign function 
-   V.assign(G.begin(), G.end()); 
+    // Store a copy of G
+    vector<int> V;
 
-   // Choose a vector from v to insert in A
-   A.push_back(V[1]);
+    // Copying G by assign function
+    V.assign(G.begin(), G.end());
 
-   // Remove the vertex inserted in A from G
-   V.erase(V.begin()+1);
+    // Choose a vector from v=2 to insert in A
+    A.push_back(1);
 
-   cout<<"a = "<<A.front()+1<<endl;
+    // Remove the vertex inserted in A from G
+    // V.erase(V.begin() + 1);
+    V.erase(remove(V.begin(), V.end(), 1), V.end());
 
-   // Initialize with the minimum value, because you
-   // want to find the maximum cut value
-   double cut_of_the_phase;
+    // Initialize with the minimum value, because you
+    // want to find the maximum cut value
+    double cut_of_the_phase;
 
-   // Use this auxiliary variable to help you to find 
-   // the largest value in each phase
-   double cutWeight = 0.0;
+    // Use this auxiliary variable to help you to find
+    // the largest value in each phase
+    double cutWeight = 0.0;
 
-   //most tightly connected vertex
-   int mtcv;
+    //most tightly connected vertex
+    int mtcv;
 
-   // Store the initial size of G
-   int n = V.size() + A.size();
+    // Store the initial size of G
+    int n = V.size() + A.size();
 
-   // You need to do until A is as large as the initial size of G 
-   while (A.size() < n)
-   {
-      cut_of_the_phase = numeric_limits<double>::min();
-      // Find the most tightly connected vertex - mtcv
-      mtcv = V.front();
-      for(auto i: V){
-         cutWeight = 0.0;
-         for(auto j: A)
-            cutWeight+=w[i][j];
-         if(cutWeight > cut_of_the_phase){
-            // Store the cut of the phase value
-            cut_of_the_phase = cutWeight;
-            // Store the most tightly connected vertex - mtcv
-            mtcv = i;
-         }
-      }
-      // Add to A the most tightly connected vertex - mtcv
-      A.push_back(mtcv);      
-      // Remove mtcv from V
-      V.erase(remove(V.begin(), V.end(), mtcv), V.end());
-   }
-   
-   // Before last
-   int s = *(A.end()-2);
-   // Last added
-   int t = A.back();
+    // You need to do until A is as large as the initial size of G
+    while (A.size() < n)
+    {
+        cut_of_the_phase = numeric_limits<double>::min();
+        // Find the most tightly connected vertex - mtcv
+        mtcv = V.front();
+        for (auto i : V)
+        {
+            cutWeight = 0.0;
+            for (auto j : A)
+                cutWeight += w[i][j];
+            if (cutWeight > cut_of_the_phase)
+            {
+                // Store the cut of the phase value
+                cut_of_the_phase = cutWeight;
+                // Store the most tightly connected vertex - mtcv
+                mtcv = i;
+            }
+        }
+        // Add to A the most tightly connected vertex - mtcv
+        A.push_back(mtcv);
+        
+        // Remove mtcv from V
+        V.erase(remove(V.begin(), V.end(), mtcv), V.end());
+    }
 
-   // Merge the two last vertex added last
-   dSet.Union(s,t);
+    // Before last
+    int s = *(A.end() - 2);
+    // Last added
+    int t = A.back();
 
-   // Shrink G
-   G.erase(remove(G.begin(), G.end(), t), G.end());
-   for(auto i: A)
-      w[i][s]+=w[i][t];
+    // Merge the two last vertex added last
+    dSet.Union(s, t);
 
-   return make_pair(cut_of_the_phase,t);
+    // Shrink G
+    G.erase(remove(G.begin(), G.end(), t), G.end());
+    for (auto i : A){
+        w[i][s] += w[i][t];
+        w[s][i] = w[i][s];
+    }
 
+    return make_pair(cut_of_the_phase, t);
 }
