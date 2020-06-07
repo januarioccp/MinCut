@@ -19,22 +19,26 @@ ostream& operator<<(ostream& os, const MinCutter& m){
     return os;
 }
 
-MinCutter::MinCutter(){
-    this->minCut = numeric_limits<double>::min();
-    this->MINIMUMCUT();
-}
 
 MinCutter::MinCutter(const vector<vector<double> > &wf){
     this->w = wf;
+    this->MINIMUMCUT();
 }
 
 MinCutter::MinCutter(const vector<vector<int> > &wf){
-    w.resize(wf.size());
+    this->w.resize(wf.size());
     for(int i = 0; i < wf.size(); i++){
-        w[i].resize(wf[i].size());
+        this->w[i].resize(wf[i].size());
         for(int j = 0; j < wf[i].size(); j++)
-            w[i][j] = double(wf[i][j]);
+            this->w[i][j] = double(wf[i][j]);
     }
+    #ifdef DEBUG
+        cout<<__LINE__<<" : "<<w.size()<<endl;
+    #endif
+    this->MINIMUMCUT();
+    #ifdef DEBUG
+        cout<<__LINE__<<" : "<<w.size()<<endl;
+    #endif
 }
 
 MinCutter::~MinCutter(){
@@ -43,8 +47,10 @@ MinCutter::~MinCutter(){
 
 void MinCutter::MINIMUMCUT()
 {
-    int n = w.size();
-
+    int n = this->w.size();
+    #ifdef DEBUG
+        cout<<__LINE__<<" : "<<w.size()<<endl;
+    #endif
     // You need to find the value of the minimum cut
     this->minCut = numeric_limits<double>::max();
 

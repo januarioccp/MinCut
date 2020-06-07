@@ -5,6 +5,8 @@
 #include <iostream>
 using namespace std;
 
+#define DEBUG
+
 class MinCutter{
 private:
     double minCut;
@@ -15,7 +17,6 @@ private:
     vector<vector<double> > w;
     void MINIMUMCUT();
     pair<double, int> MINIMUMCUTPHASE();
-    MinCutter();
     friend ostream& operator<<(ostream& os, const MinCutter& dt);
 
 public:
