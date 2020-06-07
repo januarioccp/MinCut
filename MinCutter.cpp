@@ -152,6 +152,18 @@ pair<double, int> MinCutter::MINIMUMCUTPHASE(){
     // Last added
     int t = A.back();
 
+    #ifdef DEBUG
+    cout<<cut_of_the_phase<<endl;
+    for (int i = 0; i < w.size(); i++)
+        if (dSet->find(t) == dSet->find(i))
+            cout<<i<<" ";
+    cout<<" - "
+    for (int i = 0; i < w.size(); i++)
+        if (dSet->find(t) != dSet->find(i))
+            cout<<i<<" ";
+        cout<<endl;
+    #endif
+
     // Merge the two last vertex added last
     dSet->Union(s, t);
 
