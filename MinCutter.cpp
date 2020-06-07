@@ -1,56 +1,54 @@
 #include "MinCutter.h"
 #include "DisjSet.h"
 
-ostream& operator<<(ostream& os, const MinCutter& m){
-    os<<m.minCut<<endl;
-    os<<"{";
-    for(auto i:m.S1){
-        os<<i;
-        if(i!=m.S1.back())
-            os<<",";
+ostream &operator<<(ostream &os, const MinCutter &m)
+{
+    os << m.minCut << endl;
+    os << "{";
+    for (auto i : m.S1)
+    {
+        os << i;
+        if (i != m.S1.back())
+            os << ",";
     }
-    os<<"}{";
-    for(auto i:m.S2){
-        os<<i;
-        if(i!=m.S2.back())
-            os<<",";
+    os << "}{";
+    for (auto i : m.S2)
+    {
+        os << i;
+        if (i != m.S2.back())
+            os << ",";
     }
-    os<<"}";
+    os << "}";
     return os;
 }
 
-
-MinCutter::MinCutter(const vector<vector<double> > &wf){
+MinCutter::MinCutter(const vector<vector<double>> &wf)
+{
     this->w = wf;
     this->MINIMUMCUT();
 }
 
-MinCutter::MinCutter(const vector<vector<int> > &wf){
+MinCutter::MinCutter(const vector<vector<int>> &wf)
+{
     this->w.resize(wf.size());
-    for(int i = 0; i < wf.size(); i++){
+    for (int i = 0; i < wf.size(); i++)
+    {
         this->w[i].resize(wf[i].size());
-        for(int j = 0; j < wf[i].size(); j++)
+        for (int j = 0; j < wf[i].size(); j++)
             this->w[i][j] = double(wf[i][j]);
     }
-    #ifdef DEBUG
-        cout<<__LINE__<<" : "<<w.size()<<endl;
-    #endif
     this->MINIMUMCUT();
-    #ifdef DEBUG
-        cout<<__LINE__<<" : "<<w.size()<<endl;
-    #endif
 }
 
-MinCutter::~MinCutter(){
+MinCutter::~MinCutter()
+{
     delete this->dSet;
 }
 
 void MinCutter::MINIMUMCUT()
 {
     int n = this->w.size();
-    #ifdef DEBUG
-        cout<<__LINE__<<" : "<<w.size()<<endl;
-    #endif
+    
     // You need to find the value of the minimum cut
     this->minCut = numeric_limits<double>::max();
 
@@ -69,28 +67,13 @@ void MinCutter::MINIMUMCUT()
     // at least 2 vertices
     while (G.size() > 1)
     {
-        pair<double, int> result = MINIMUMCUTPHASE();
-        double cut_of_the_phase = result.first;
-        int last = result.second;
-
-        if (cut_of_the_phase < this->minCut)
-        {
-            this->minCut = cut_of_the_phase;
-            // Clear the partition set every time???
-            S1.clear();
-            S2.clear();
-            for (int i = 0; i < n; i++)
-                if (dSet->find(last) == dSet->find(i))
-                    S1.push_back(i);
-                else
-                    S2.push_back(i);   
-        }
         // Shrink G
-        G.erase(remove(G.begin(), G.end(), last), G.end());
+        G.erase(remove(G.begin(), G.end(), MINIMUMCUTPHASE()), G.end());
     }
 }
 
-pair<double, int> MinCutter::MINIMUMCUTPHASE(){
+int MinCutter::MINIMUMCUTPHASE()
+{
     // A container to the vertices in this phase
     vector<int> A;
 
@@ -142,7 +125,7 @@ pair<double, int> MinCutter::MINIMUMCUTPHASE(){
         }
         // Add to A the most tightly connected vertex - mtcv
         A.push_back(mtcv);
-        
+
         // Remove mtcv from V
         V.erase(remove(V.begin(), V.end(), mtcv), V.end());
     }
@@ -150,27 +133,29 @@ pair<double, int> MinCutter::MINIMUMCUTPHASE(){
     // Before last
     int s = *(A.end() - 2);
     // Last added
-    int t = A.back();
+    int last = A.back();
 
-    #ifdef DEBUG
-    cout<<cut_of_the_phase<<endl;
-    for (int i = 0; i < w.size(); i++)
-        if (dSet->find(t) == dSet->find(i))
-            cout<<i<<" ";
-    cout<<" - ";
-    for (int i = 0; i < w.size(); i++)
-        if (dSet->find(t) != dSet->find(i))
-            cout<<i<<" ";
-        cout<<endl;
-    #endif
+    if (cut_of_the_phase < this->minCut)
+    {
+        this->minCut = cut_of_the_phase;
+        // Clear the partition set every time???
+        S1.clear();
+        S2.clear();
+        for (int i = 0; i < w.size(); i++)
+            if (dSet->find(last) == dSet->find(i))
+                S1.push_back(i);
+            else
+                S2.push_back(i);
+    }
 
     // Merge the two last vertex added last
-    dSet->Union(s, t);
+    dSet->Union(s, last);
 
-    for (auto i : A){
-        w[i][s] += w[i][t];
+    for (auto i : A)
+    {
+        w[i][s] += w[i][last];
         w[s][i] = w[i][s];
     }
 
-    return make_pair(cut_of_the_phase, t);
+    return last;
 }
