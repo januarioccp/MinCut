@@ -157,7 +157,7 @@ pair<double, int> MinCutter::MINIMUMCUTPHASE(){
     for (int i = 0; i < w.size(); i++)
         if (dSet->find(t) == dSet->find(i))
             cout<<i<<" ";
-    cout<<" - "
+    cout<<" - ";
     for (int i = 0; i < w.size(); i++)
         if (dSet->find(t) != dSet->find(i))
             cout<<i<<" ";
