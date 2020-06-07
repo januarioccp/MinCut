@@ -3,6 +3,7 @@
 #include "DisjSet.h"
 #include <vector>
 #include <iostream>
+#include <set>
 using namespace std;
 
 class MinCutter{
