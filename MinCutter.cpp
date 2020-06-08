@@ -82,7 +82,7 @@ int MinCutter::MINIMUMCUTPHASE()
     // Store a copy of G but in a vector of pair
     vector< pair<double,int> > V;
 
-    // Copying G by assign function
+    // Copying G to V
     for(auto i:G)
         V.push_back(make_pair(0,i));
 
@@ -91,10 +91,6 @@ int MinCutter::MINIMUMCUTPHASE()
 
     // Remove the vertex inserted in A from G
     V.erase(V.begin());
-
-    //Update weights
-    for(auto &i:V)
-        i.first+=w[A.back()][i.second];
 
     // Initialize with the minimum value, because you
     // want to find the maximum cut value
@@ -110,23 +106,19 @@ int MinCutter::MINIMUMCUTPHASE()
     // You need to do until A is as large as the initial size of G
     while (A.size() < n)
     {
-        make_pair(V.begin(),V.end());
-        cut_of_the_phase = numeric_limits<double>::min();
-        // Find the most tightly connected vertex - mtcv
+        //Update weights
+        for(auto &i:V)
+            i.first+=w[A.back()][i.second];
+        
+        // Build heap
+        make_heap(V.begin(),V.end());
+        
+        // Store current cut_of_the_phase value
+        cut_of_the_phase = V.front().first;
+
+        // Select the most tightly connected vertex - mtcv
         pair<double,int> mtcv = V.front();
-        for (auto i : V)
-        {
-            cutWeight = 0.0;
-            for (auto j : A)
-                cutWeight += w[i.second][j];
-            if (cutWeight > cut_of_the_phase)
-            {
-                // Store the cut of the phase value
-                cut_of_the_phase = cutWeight;
-                // Store the most tightly connected vertex - mtcv
-                mtcv = i;
-            }
-        }
+        
         // Add to A the most tightly connected vertex - mtcv
         A.push_back(mtcv.second);
 
