@@ -8,11 +8,9 @@ DisjSet::DisjSet(int n)
     makeSet();
 }
 
-void DisjSet::makeSet()
-{
+void DisjSet::makeSet(){
     for (int i = 0; i < n; i++)
         parent[i] = i;
-    
 }
 
 int DisjSet::find(int x) 
