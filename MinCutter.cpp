@@ -79,7 +79,7 @@ int MinCutter::MINIMUMCUTPHASE()
     // A container to the vertices in this phase
     vector<int> A;
 
-    // Store a copy of G
+    // Store a copy of G but in a vector of pair
     vector<int> V;
 
     // Copying G by assign function
