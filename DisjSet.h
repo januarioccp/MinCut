@@ -10,8 +10,7 @@ class DisjSet {
     vector<int> parent;
     int n; 
 public: 
-    // Constructor to create and 
-    // initialize sets of n items 
+    // Constructor to create and initialize sets of n items 
     DisjSet(int n);
      
     // Creates n single item sets 
