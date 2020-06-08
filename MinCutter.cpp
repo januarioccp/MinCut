@@ -57,8 +57,10 @@ void MinCutter::MINIMUMCUT()
     for (unsigned i = 0; i < G.size(); i++)
         G[i] = i;
 
-    // TODO Randomize the set of vertices
-    //random_shuffle(V.begin(), V.end());
+    // Randomize the set of vertices - use -std=c++2a
+    // obtain a time-based seed:
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    shuffle(G.begin(), G.end(),default_random_engine(seed));
 
     // Use a disjoint set data structure to shrink G later
     dSet = new DisjSet(n);
@@ -84,11 +86,10 @@ int MinCutter::MINIMUMCUTPHASE()
     V.assign(G.begin(), G.end());
 
     // Choose a vector from v=2 to insert in A
-    A.push_back(1);
+    A.push_back(V.front());
 
     // Remove the vertex inserted in A from G
-    // V.erase(V.begin() + 1);
-    V.erase(remove(V.begin(), V.end(), 1), V.end());
+    V.erase(V.begin());
 
     // Initialize with the minimum value, because you
     // want to find the maximum cut value

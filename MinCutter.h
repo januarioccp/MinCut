@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 #include <set>
+#include <algorithm>
+#include <random>
 using namespace std;
 
 class MinCutter{
