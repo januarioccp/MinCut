@@ -22,7 +22,6 @@ private:
 
 public:
     MinCutter(const vector<vector<double> > &w);
-    MinCutter(const vector<vector<int> > &w);
     ~MinCutter();
     double getMinCut(){ return minCut;}
     pair<vector<int>, vector<int> > getPartition(){return make_pair(S1,S2);}

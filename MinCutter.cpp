@@ -7,14 +7,14 @@ ostream &operator<<(ostream &os, const MinCutter &m)
     os << "{";
     for (auto i : m.S1)
     {
-        os << i;
+        os << i+1;
         if (i != m.S1.back())
             os << ",";
     }
     os << "}{";
     for (auto i : m.S2)
     {
-        os << i;
+        os << i+1;
         if (i != m.S2.back())
             os << ",";
     }
@@ -22,21 +22,9 @@ ostream &operator<<(ostream &os, const MinCutter &m)
     return os;
 }
 
-MinCutter::MinCutter(const vector<vector<double>> &wf)
+MinCutter::MinCutter(const vector<vector<double> > &wf)
 {
     this->w = wf;
-    this->MINIMUMCUT();
-}
-
-MinCutter::MinCutter(const vector<vector<int>> &wf)
-{
-    this->w.resize(wf.size());
-    for (int i = 0; i < wf.size(); i++)
-    {
-        this->w[i].resize(wf[i].size());
-        for (int j = 0; j < wf[i].size(); j++)
-            this->w[i][j] = double(wf[i][j]);
-    }
     this->MINIMUMCUT();
 }
 
