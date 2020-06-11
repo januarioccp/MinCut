@@ -18,19 +18,21 @@ int main()
     // # of edges
     int e;
     // Adjacency matrix
-    vector<vector<int>> G;
+    vector<vector<double>> G;
     cin >> n;
     cin >> e;
 
-    G = vector<vector<int>>(n, vector<int>(n, 0));
+    G = vector<vector<double>>(n, vector<double>(n, 0));
 
-    int x, y, w;
+    int x, y;
+    double w;
     for (int i = 0; i < e; i++)
     {
         cin >> x >> y >> w;
         G[x - 1][y - 1] = w;
         G[y - 1][x - 1] = w;
     }
+
 
     MinCutter m(G);
     cout<<m<<endl;
